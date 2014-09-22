@@ -21,16 +21,16 @@ public class GeohashFacetExecutor extends FacetExecutor {
 	private final double factor;
     private final boolean showGeohashCell;
     private final boolean showDocumentId;
-	private final ClusterBuilder builder;
+    private final ClusterBuilder builder;
 	
-	public GeohashFacetExecutor(IndexGeoPointFieldData<?> indexFieldData, IndexFieldData<?> idIndexFieldData, 
-			                    double factor, boolean showGeohashCell, boolean showDocumentId) {
+	public GeohashFacetExecutor(IndexGeoPointFieldData<?> indexFieldData, IndexFieldData<?> idIndexFieldData,
+                                double factor, boolean showGeohashCell, boolean showDocumentId, CenteringAlgorithm centeringAlgorithm) {
 		this.indexFieldData = indexFieldData;
 		this.idIndexFieldData = idIndexFieldData;
 		this.factor = factor;
         this.showGeohashCell = showGeohashCell;
         this.showDocumentId = showDocumentId;
-		this.builder = new ClusterBuilder(factor);
+        this.builder = new ClusterBuilder(factor, centeringAlgorithm);
 	}
 
 	@Override

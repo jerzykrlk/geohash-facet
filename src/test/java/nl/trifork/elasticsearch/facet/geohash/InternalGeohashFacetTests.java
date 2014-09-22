@@ -23,7 +23,7 @@ public class InternalGeohashFacetTests {
                 false,
                 Arrays.asList(new Cluster(Places.DENVER,
                         BinaryGeoHashUtils.encodeAsLong(Places.DENVER, BinaryGeoHashUtils.MAX_PREFIX_LENGTH),
-                        BinaryGeoHashUtils.MAX_PREFIX_LENGTH))
+                        BinaryGeoHashUtils.MAX_PREFIX_LENGTH, CenteringAlgorithm.ARITHMETIC_MEAN))
         );
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

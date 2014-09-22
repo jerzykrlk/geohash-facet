@@ -43,6 +43,23 @@ public class GeohashFacetIT {
         assertEquals("lon", 0.3d, center.getLon(), 0);
     }
 
+    @Test
+    public void testFacetSearchWithMedian() throws Exception {
+        SearchRequestBuilder request = getSearchRequest(
+                51.519290059804916,
+                -0.08982181549072266,
+                51.51928871870041,
+                -0.08981913328170776,
+                CenteringAlgorithm.MEDIAN);
+        SearchResponse response = request.get();
+        GeohashFacet geohashFacet = response.getFacets().facet("location");
+
+        System.out.println(response);
+        GeoPoint center = geohashFacet.getEntries().get(0).center();
+        assertEquals("lat", 51.519290000000005d, center.getLat(), 0.000000001d);
+        assertEquals("lon", -0.08981999999999998d, center.getLon(), 0);
+    }
+
     private GeohashFacet getFacetFor(int topLeftLat, int topLeftLon, int bottomRightLat, int bottomRightLon) {
         SearchRequestBuilder request = getSearchRequest(topLeftLat, topLeftLon, bottomRightLat, bottomRightLon);
         SearchResponse response = request.get();
@@ -79,5 +96,16 @@ public class GeohashFacetIT {
                 .bottomRight(bottomRightLat, bottomRightLon);
     }
 
+    private SearchRequestBuilder getSearchRequest(double topLeftLat, double topLeftLon, double bottomRightLat, double bottomRightLon, CenteringAlgorithm centeringAlgorithm) {
+        GeoBoundingBoxFilterBuilder boundingBox = getBoundingBox(topLeftLat, topLeftLon, bottomRightLat, bottomRightLon);
+        GeoFacetBuilder geoHash = getGeohashFacet(centeringAlgorithm);
+        FilteredQueryBuilder filteredQuery = getFilteredQuery(boundingBox);
+        return getSearchRequest(geoHash, filteredQuery);
+    }
+
+    private GeoFacetBuilder getGeohashFacet(CenteringAlgorithm centeringAlgorithm) {
+        return new GeoFacetBuilder(EmbeddedElasticSearch.TYPE)
+                .field("latLon").factor(1).showDocId(true).showGeohashCell(true).centeringAlgorithm(centeringAlgorithm);
+    }
 
 }

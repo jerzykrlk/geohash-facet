@@ -1,6 +1,7 @@
 package nl.trifork.elasticsearch.clustering.grid;
 
 import nl.trifork.elasticsearch.facet.geohash.BinaryGeoHashUtils;
+import nl.trifork.elasticsearch.facet.geohash.CenteringAlgorithm;
 import nl.trifork.elasticsearch.facet.geohash.Cluster;
 import nl.trifork.elasticsearch.facet.geohash.ClusterReducer;
 import org.testng.annotations.BeforeMethod;
@@ -28,7 +29,7 @@ public class ClusterReducerTests {
 
         Iterable<Cluster> clusters = Arrays.asList(new Cluster(DENVER,
                 BinaryGeoHashUtils.encodeAsLong(DENVER, BinaryGeoHashUtils.MAX_PREFIX_LENGTH),
-                BinaryGeoHashUtils.MAX_PREFIX_LENGTH));
+                BinaryGeoHashUtils.MAX_PREFIX_LENGTH, CenteringAlgorithm.ARITHMETIC_MEAN));
 
         List<Cluster> reduced = clusterReducer.reduce(clusters);
 
@@ -41,10 +42,10 @@ public class ClusterReducerTests {
         Iterable<Cluster> clusters = Arrays.asList(
                 new Cluster(DENVER,
                         BinaryGeoHashUtils.encodeAsLong(DENVER, BinaryGeoHashUtils.MAX_PREFIX_LENGTH),
-                        BinaryGeoHashUtils.MAX_PREFIX_LENGTH),
+                        BinaryGeoHashUtils.MAX_PREFIX_LENGTH, CenteringAlgorithm.ARITHMETIC_MEAN),
                 new Cluster(LAS_VEGAS,
                         BinaryGeoHashUtils.encodeAsLong(LAS_VEGAS, BinaryGeoHashUtils.MAX_PREFIX_LENGTH),
-                        BinaryGeoHashUtils.MAX_PREFIX_LENGTH)
+                        BinaryGeoHashUtils.MAX_PREFIX_LENGTH, CenteringAlgorithm.ARITHMETIC_MEAN)
         );
 
         List<Cluster> reduced = clusterReducer.reduce(clusters);
@@ -59,10 +60,12 @@ public class ClusterReducerTests {
         Iterable<Cluster> clusters = Arrays.asList(
                 new Cluster(DENVER,
                         BinaryGeoHashUtils.encodeAsLong(DENVER, 4),
-                        4),
+                        4,
+                        CenteringAlgorithm.ARITHMETIC_MEAN),
                 new Cluster(LAS_VEGAS,
                         BinaryGeoHashUtils.encodeAsLong(LAS_VEGAS, 4),
-                        4)
+                        4,
+                        CenteringAlgorithm.ARITHMETIC_MEAN)
         );
 
         List<Cluster> reduced = clusterReducer.reduce(clusters);

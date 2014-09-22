@@ -1,0 +1,74 @@
+{
+   "locations": [
+      {
+         "id": 1,
+         "latLon": {
+            "lat": 51,
+            "lon": 0
+         }
+      },
+      {
+         "id": 2,
+         "latLon": {
+            "lat": 51,
+            "lon": 1
+         }
+      },
+      {
+         "id": 3,
+         "latLon": {
+            "lat": 51,
+            "lon": 0
+         }
+      },
+      {
+         "id": 4,
+         "latLon": {
+            "lat": 53,
+            "lon": 0
+         }
+      },
+      {
+         "id": 5,
+         "latLon": {
+            "lat": 51,
+            "lon": 1
+         }
+      },
+      {
+         "id": 6,
+         "latLon": {
+            "lat": 51,
+            "lon": 0
+         }
+      },
+      {
+         "id": 7,
+         "latLon": {
+            "lat": 51,
+            "lon": 0
+         }
+      },
+      {
+         "id": 8,
+         "latLon": {
+            "lat": 53,
+            "lon": 1
+         }
+      },
+      {
+         "id": 9,
+         "latLon": {
+            "lat": 51,
+            "lon": 0
+         }
+      },
+      {
+         "id": 10,
+         "latLon": {
+            "lat": 53,
+            "lon": 0
+         }
+      }
+   ]
+}

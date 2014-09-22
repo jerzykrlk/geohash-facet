@@ -2,6 +2,7 @@ package nl.trifork.elasticsearch.facet.geohash;
 
 import java.io.IOException;
 
+import org.elasticsearch.common.base.Strings;
 import org.elasticsearch.common.component.AbstractComponent;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
@@ -20,7 +21,7 @@ import org.elasticsearch.search.internal.SearchContext;
  */
 public class GeohashFacetParser extends AbstractComponent implements FacetParser {
 
-	@Inject
+    @Inject
 	public GeohashFacetParser(Settings settings) {
 		super(settings);
 		InternalGeohashFacet.registerStreams();
@@ -50,8 +51,9 @@ public class GeohashFacetParser extends AbstractComponent implements FacetParser
 		double factor = 0.1;
         boolean showGeohashCell = false;
         boolean showDocumentId = false;
+        String centeringAlgorithmName = null;
 
-		String currentName = parser.currentName();
+        String currentName = parser.currentName();
 		XContentParser.Token token;
 		while ((token = parser.nextToken()) != XContentParser.Token.END_OBJECT) {
 			if (token == XContentParser.Token.FIELD_NAME) {
@@ -65,6 +67,8 @@ public class GeohashFacetParser extends AbstractComponent implements FacetParser
 					showGeohashCell = parser.booleanValue();
 				} else if ("show_doc_id".equals(currentName)) {
                     showDocumentId = parser.booleanValue();
+                }else if ("centering_algorithm".equals(currentName)) {
+                    centeringAlgorithmName = parser.text();
                 }
 			}
 		}
@@ -77,12 +81,26 @@ public class GeohashFacetParser extends AbstractComponent implements FacetParser
             throw new FacetPhaseExecutionException(facetName, "failed to find mapping for [" + fieldName + "]");
         }
         IndexGeoPointFieldData<?> indexFieldData = context.fieldData().getForField(fieldMapper);
-        
+
         FieldMapper<?> idFieldMapper = context.smartNameFieldMapper("_uid");
         if (idFieldMapper == null) {
             throw new FacetPhaseExecutionException(facetName, "failed to find mapping for [_id]");
         }
         IndexFieldData<?> idIndexFieldData = context.fieldData().getForField(idFieldMapper);
-		return new GeohashFacetExecutor(indexFieldData, idIndexFieldData, factor, showGeohashCell, showDocumentId);
+
+        CenteringAlgorithm centeringAlgorithm = getCenteringAlgorithm(facetName, centeringAlgorithmName);
+
+		return new GeohashFacetExecutor(indexFieldData, idIndexFieldData, factor, showGeohashCell, showDocumentId, centeringAlgorithm);
 	}
+
+    private CenteringAlgorithm getCenteringAlgorithm(String facetName, String centeringAlgorithmName) {
+        if (Strings.isNullOrEmpty(centeringAlgorithmName)){
+            return CenteringAlgorithm.ARITHMETIC_MEAN;
+        }
+        try{
+            return CenteringAlgorithm.valueOf(centeringAlgorithmName);
+        }catch (IllegalArgumentException e){
+            throw new FacetPhaseExecutionException(facetName, "failed to find centering algorithm ["+centeringAlgorithmName+"]");
+        }
+    }
 }

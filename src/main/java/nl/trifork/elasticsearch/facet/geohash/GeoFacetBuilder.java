@@ -20,6 +20,7 @@ public class GeoFacetBuilder extends FacetBuilder {
     private double factor;
     private boolean showGeohashCell;
     private boolean showDocId;
+    private CenteringAlgorithm centeringAlgorithm = CenteringAlgorithm.ARITHMETIC_MEAN;
 
     /**
      * Construct a new term facet with the provided facet name.
@@ -53,6 +54,11 @@ public class GeoFacetBuilder extends FacetBuilder {
         return this;
     }
 
+    public GeoFacetBuilder centeringAlgorithm(CenteringAlgorithm centeringAlgorithm) {
+        this.centeringAlgorithm = centeringAlgorithm;
+        return this;
+    }
+
     @Override
     public XContentBuilder toXContent(XContentBuilder builder, Params params) throws IOException {
         if (fieldName == null) {
@@ -65,6 +71,7 @@ public class GeoFacetBuilder extends FacetBuilder {
         builder.field("factor", factor);
         builder.field("show_geohash_cell", showGeohashCell);
         builder.field("show_doc_id", showDocId);
+        builder.field("centering_algorithm", centeringAlgorithm);
 
         builder.endObject();
         addFilterFacetAndGlobal(builder, params);

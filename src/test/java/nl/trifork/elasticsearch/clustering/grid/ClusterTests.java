@@ -8,10 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 import java.io.IOException;
 import java.util.Random;
 
-import nl.trifork.elasticsearch.facet.geohash.BinaryGeoHashUtils;
-import nl.trifork.elasticsearch.facet.geohash.BoundingBox;
-import nl.trifork.elasticsearch.facet.geohash.Cluster;
-import nl.trifork.elasticsearch.facet.geohash.GeoPoints;
+import nl.trifork.elasticsearch.facet.geohash.*;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.io.stream.BytesStreamInput;
 import org.elasticsearch.common.io.stream.BytesStreamOutput;
@@ -32,7 +29,7 @@ public class ClusterTests {
 
                 System.out.printf("Testing with point %s and %d geohash bit(s)...\n", point.toString(), geohashBits);
 
-                Cluster cluster = new Cluster(point, BinaryGeoHashUtils.encodeAsLong(point, geohashBits), geohashBits);
+                Cluster cluster = new Cluster(point, BinaryGeoHashUtils.encodeAsLong(point, geohashBits), geohashBits, CenteringAlgorithm.ARITHMETIC_MEAN);
                 assertThat(cluster, equalTo(roundtrip(cluster)));
             }
         }
